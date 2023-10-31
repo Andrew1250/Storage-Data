@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  nginx-node:
+    image: nginx:latest
+    container_name: nginx-node
+    ports:
+      - "80:80"
+    links:
+      - node
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:delegated
+      - ../:/var/www/html/node:delegated
+    working_dir: /var/www/html/node
+    networks:
+      node_network:
+        ipv4_address: 172.10.0.2
+  node:
+    working_dir: /var/www/html/node
+    build:
+      context: ../
+      dockerfile: ./container/node/node.Dockerfile
+    container_name: node
+    image: node
+    volumes:
+      - ../:/var/www/html/node:delegated
+      - /var/www/html/node/node_modules
+    networks:
+      node_network:
+        ipv4_address: 172.10.0.4
+    tty: true
+  mysql-node:
+    image: mariadb:latest
+    container_name: node-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: node
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      node_network:
+        ipv4_address: 172.10.0.3
+
+volumes:
+  mysqldata:
+    external: true
+
+networks:
+  node_network:
+    name: node_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.10.0.0/16

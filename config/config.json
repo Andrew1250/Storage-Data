@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "node",
+    "host": "node-db",
+    "dialect": "mysql"
+  }
+}
