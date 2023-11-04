@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nginx-node:
-    image: nginx:latest
+    image: andrew1250/nginx-node:latest
     container_name: nginx-node
     ports:
       - "80:80"
@@ -17,11 +17,8 @@ services:
         ipv4_address: 172.10.0.2
   node:
     working_dir: /var/www/html/node
-    build:
-      context: ../
-      dockerfile: ./container/node/node.Dockerfile
+    image: andrew1250/node:latest
     container_name: node
-    image: node
     volumes:
       - ../:/var/www/html/node:delegated
       - /var/www/html/node/node_modules
@@ -30,7 +27,7 @@ services:
         ipv4_address: 172.10.0.4
     tty: true
   mysql-node:
-    image: mariadb:latest
+    image: andrew1250/database-node:latest
     container_name: node-db
     environment:
       MYSQL_ROOT_PASSWORD: root
